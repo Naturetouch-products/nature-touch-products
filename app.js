@@ -1,43 +1,244 @@
 const DEFAULT_PRODUCTS = [
-  {id:'sample-1',name:'Moringa Powder',price:120,mrp:250,weight:'100 g',category:'Wellness',stock:20,description:'A sample catalog item. Replace it with your own product from the Admin Panel.',image:'assets/logo.png',active:true},
-  {id:'sample-2',name:'Moringa Herbal Soap',price:30,mrp:40,weight:'100 g',category:'Soaps',stock:30,description:'A sample soap item for your new catalog.',image:'assets/logo.png',active:true},
-  {id:'sample-3',name:'Banana Chips',price:90,mrp:110,weight:'250 g',category:'Foods',stock:18,description:'A sample snack item. Add your own photo and details.',image:'assets/logo.png',active:true},
-  {id:'sample-4',name:'Neem Herbal Soap',price:30,mrp:40,weight:'100 g',category:'Soaps',stock:25,description:'A sample herbal soap listing.',image:'assets/logo.png',active:true}
+  {
+    id: "sample-1",
+    name: "Moringa Powder",
+    price: 120,
+    mrp: 250,
+    weight: "100 g",
+    category: "Wellness",
+    stock: 20,
+    description: "Moringa powder from Nature Touch Products.",
+    image: "assets/logo.png",
+    active: true
+  },
+  {
+    id: "sample-2",
+    name: "Moringa Herbal Soap",
+    price: 30,
+    mrp: 40,
+    weight: "100 g",
+    category: "Soaps",
+    stock: 30,
+    description: "Moringa herbal soap.",
+    image: "assets/logo.png",
+    active: true
+  },
+  {
+    id: "sample-3",
+    name: "Banana Chips",
+    price: 90,
+    mrp: 110,
+    weight: "250 g",
+    category: "Foods",
+    stock: 18,
+    description: "Crispy banana chips.",
+    image: "assets/logo.png",
+    active: true
+  }
 ];
 
-function getProducts(){
-  const saved=localStorage.getItem('nt_products');
-  if(saved){try{return JSON.parse(saved)}catch(e){}}
-  localStorage.setItem('nt_products',JSON.stringify(DEFAULT_PRODUCTS));
-  return DEFAULT_PRODUCTS;
-}
-function currency(n){return `₹${Number(n||0).toLocaleString('en-IN')}`}
-function esc(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function toast(message){const el=document.getElementById('toast');if(!el)return;el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2300)}
-function waUrl(product){const text=`Hello Nature Touch Products, I want to order:\n${product.name}\nPrice: ${currency(product.price)}\nWeight: ${product.weight||''}`;return `https://wa.me/919579901536?text=${encodeURIComponent(text)}`}
-function renderProducts(){
-  const grid=document.getElementById('productGrid'); if(!grid)return;
-  const search=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
-  const cat=document.getElementById('categoryFilter')?.value||'all';
-  const products=getProducts().filter(p=>p.active!==false && (cat==='all'||p.category===cat) && (!search||`${p.name} ${p.description} ${p.category}`.toLowerCase().includes(search)));
-  grid.innerHTML=products.length?products.map(p=>`<article class="product-card">
-    <div class="product-image"><img src="${esc(p.image||'assets/logo.png')}" alt="${esc(p.name)}" /></div>
-    <div class="product-body"><span class="pill">${esc(p.category||'Product')}</span><h3>${esc(p.name)}</h3><p>${esc(p.description||'')}</p>
-      <div class="price-row"><span class="price">${currency(p.price)}</span>${p.mrp?`<span class="mrp">${currency(p.mrp)}</span>`:''}</div>
-      <div class="stock">${Number(p.stock||0)>0?'In stock':'Out of stock'}${p.weight?` • ${esc(p.weight)}`:''}</div>
-      <div class="product-actions"><a class="mini-btn buy" href="${waUrl(p)}" target="_blank" rel="noreferrer">WhatsApp Order</a></div>
-    </div></article>`).join(''):'<div class="empty">No products found. Add products from the Admin Panel.</div>';
-}
-function updateCategories(){
-  const select=document.getElementById('categoryFilter');if(!select)return;
-  const current=select.value;const cats=[...new Set(getProducts().map(p=>p.category).filter(Boolean))].sort();
-  select.innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-  select.value=cats.includes(current)?current:'all';
+const firebaseConfig = {
+  apiKey: "AIzaSyAHGFmf2Uie08etFM5jq_-_UL091kbn4wQ",
+  authDomain: "nature-touch-products-2e501.firebaseapp.com",
+  projectId: "nature-touch-products-2e501",
+  storageBucket: "nature-touch-products-2e501.firebasestorage.app",
+  messagingSenderId: "237809167619",
+  appId: "1:237809167619:web:6b3378c1298e8a8d2a4d36"
+};
+
+let db = null;
+
+async function connectFirebase() {
+  try {
+    const { initializeApp } =
+      await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
+
+    const { getFirestore, collection, getDocs } =
+      await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js");
+
+    const app = initializeApp(firebaseConfig);
+    db = {
+      firestore: getFirestore(app),
+      collection,
+      getDocs
+    };
+
+    return true;
+  } catch (error) {
+    console.error("Firebase connection failed:", error);
+    return false;
+  }
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('year').textContent=new Date().getFullYear();
-  updateCategories(); renderProducts();
-  document.getElementById('searchInput')?.addEventListener('input',renderProducts);
-  document.getElementById('categoryFilter')?.addEventListener('change',renderProducts);
+async function getProducts() {
+  if (!db) {
+    await connectFirebase();
+  }
+
+  try {
+    const snapshot = await db.getDocs(
+      db.collection(db.firestore, "products")
+    );
+
+    if (!snapshot.empty) {
+      return snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(product => product.active !== false);
+    }
+  } catch (error) {
+    console.error("Could not load products from Firestore:", error);
+  }
+
+  return DEFAULT_PRODUCTS;
+}
+
+function currency(value) {
+  return `₹${Number(value || 0).toLocaleString("en-IN")}`;
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>'"]/g, character => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[character]));
+}
+
+function waUrl(product) {
+  const text =
+    `Hello Nature Touch Products, I want to order:\n` +
+    `${product.name}\n` +
+    `Price: ${currency(product.price)}\n` +
+    `Weight: ${product.weight || ""}`;
+
+  return `https://wa.me/919579901536?text=${encodeURIComponent(text)}`;
+}
+
+async function renderProducts() {
+  const grid = document.getElementById("productGrid");
+  if (!grid) return;
+
+  const search =
+    (document.getElementById("searchInput")?.value || "")
+      .trim()
+      .toLowerCase();
+
+  const category =
+    document.getElementById("categoryFilter")?.value || "all";
+
+  const allProducts = await getProducts();
+
+  const products = allProducts.filter(product => {
+    const matchesCategory =
+      category === "all" || product.category === category;
+
+    const text =
+      `${product.name || ""} ${product.description || ""} ${product.category || ""}`
+        .toLowerCase();
+
+    const matchesSearch = !search || text.includes(search);
+
+    return matchesCategory && matchesSearch;
+  });
+
+  grid.innerHTML = products.length
+    ? products.map(product => `
+      <article class="product-card">
+        <div class="product-image">
+          <img
+            src="${esc(product.image || "assets/logo.png")}"
+            alt="${esc(product.name)}"
+          >
+        </div>
+
+        <div class="product-body">
+          <span class="pill">${esc(product.category || "Product")}</span>
+
+          <h3>${esc(product.name)}</h3>
+
+          <p>${esc(product.description || "")}</p>
+
+          <div class="price-row">
+            <span class="price">${currency(product.price)}</span>
+            ${
+              product.mrp
+                ? `<span class="mrp">${currency(product.mrp)}</span>`
+                : ""
+            }
+          </div>
+
+          <div class="stock">
+            ${
+              Number(product.stock || 0) > 0
+                ? "In stock"
+                : "Out of stock"
+            }
+            ${
+              product.weight
+                ? ` • ${esc(product.weight)}`
+                : ""
+            }
+          </div>
+
+          <div class="product-actions">
+            <a
+              class="mini-btn buy"
+              href="${waUrl(product)}"
+              target="_blank"
+              rel="noreferrer"
+            >
+              WhatsApp Order
+            </a>
+          </div>
+        </div>
+      </article>
+    `).join("")
+    : `<div class="empty">No products found.</div>`;
+}
+
+async function updateCategories() {
+  const select = document.getElementById("categoryFilter");
+  if (!select) return;
+
+  const products = await getProducts();
+
+  const categories = [
+    ...new Set(
+      products
+        .map(product => product.category)
+        .filter(Boolean)
+    )
+  ].sort();
+
+  select.innerHTML =
+    `<option value="all">All categories</option>` +
+    categories
+      .map(category =>
+        `<option value="${esc(category)}">${esc(category)}</option>`
+      )
+      .join("");
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const year = document.getElementById("year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+  await updateCategories();
+  await renderProducts();
+
+  document
+    .getElementById("searchInput")
+    ?.addEventListener("input", renderProducts);
+
+  document
+    .getElementById("categoryFilter")
+    ?.addEventListener("change", renderProducts);
 });
