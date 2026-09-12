@@ -90,9 +90,9 @@ async function login() {
 
     toast("Login successful");
   } catch (error) {
-    console.error(error);
-    toast("Login failed. Check your email and password.");
-  }
+  console.error("Firebase login error:", error);
+  toast("Login error: " + error.code);
+}
 }
 
 async function logout() {
