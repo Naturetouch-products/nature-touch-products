@@ -13,7 +13,13 @@
       <img src="assets/logo.png" alt="Nature Touch Products" />
       <span class="eyebrow">STORE ADMIN</span>
       <h1>Manage your products</h1>
-      <p>Enter the demo admin password to open the catalog manager.</p>
+      <input
+  type="email"
+  id="emailInput"
+  placeholder="Admin email"
+  autocomplete="username"
+  required
+>
       <input id="passwordInput" type="password" placeholder="Admin password" class="form-control" />
       <button id="loginBtn" class="btn primary full">Open Admin Panel</button>
       <a href="index.html" class="back-link">← Back to website</a>
@@ -48,6 +54,6 @@
     </main>
   </div>
   <div id="toast" class="toast"></div>
-  <script src="admin.js"></script>
+ <script type="module" src="admin.js"></script>
 </body>
 </html>
