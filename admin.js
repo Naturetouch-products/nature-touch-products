@@ -29,7 +29,7 @@ const firebaseConfig = {
   appId: "1:237809167619:web:6b3378c1298e8a8d2a4d36"
 };
 
-const ADMIN_UID = "JxgwQN4hQFgpvQs7CcjTPeHwNjo1";
+const ADMIN_UID = "a61TJBh4PRWjGUswfTN70ar0byW2";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
