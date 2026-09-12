@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nature Touch Products | Pure by Nature, Trusted by You</title>
+  <meta name="description" content="Nature Touch Products — natural, premium foods and products from Wathar Station, Satara." />
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="#home" class="brand" aria-label="Nature Touch Products home">
+        <img src="assets/logo.png" alt="Nature Touch Products logo" />
+      </a>
+      <nav class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a class="admin-link" href="admin.html">Admin</a>
+      </nav>
+      <a class="whatsapp-btn" href="https://wa.me/919579901536" target="_blank" rel="noreferrer">WhatsApp</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-bg"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">NATURAL • PREMIUM • MODERN</span>
+          <h1>Pure by Nature,<br><span>Trusted by You.</span></h1>
+          <p>Discover thoughtfully made foods and products from Nature Touch Products, crafted with a focus on quality, freshness and a natural lifestyle.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#products">Shop Products</a>
+            <a class="btn outline" href="https://wa.me/919579901536" target="_blank" rel="noreferrer">Order on WhatsApp</a>
+          </div>
+          <div class="trust-row">
+            <span>✓ Easy WhatsApp ordering</span>
+            <span>✓ Online payment ready</span>
+            <span>✓ Direct from Wathar Station</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <img src="assets/logo.png" alt="Nature Touch Products" />
+          <div class="hero-card-copy">
+            <strong>Natural living, thoughtfully made.</strong>
+            <span>Foods &amp; products for everyday wellness.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="feature-strip">
+      <div class="container feature-grid">
+        <div><span class="feature-icon">🌿</span><div><strong>Natural Focus</strong><small>Thoughtful ingredients</small></div></div>
+        <div><span class="feature-icon">✨</span><div><strong>Premium Feel</strong><small>Modern presentation</small></div></div>
+        <div><span class="feature-icon">📦</span><div><strong>Easy Ordering</strong><small>WhatsApp &amp; online</small></div></div>
+        <div><span class="feature-icon">📍</span><div><strong>Based in Satara</strong><small>Wathar Station</small></div></div>
+      </div>
+    </section>
+
+    <section id="products" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">OUR COLLECTION</span>
+            <h2>Featured Products</h2>
+          </div>
+          <div class="catalog-tools">
+            <input id="searchInput" type="search" placeholder="Search products..." aria-label="Search products" />
+            <select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select>
+          </div>
+        </div>
+        <div id="productGrid" class="product-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="about" class="section alt-section">
+      <div class="container about-grid">
+        <div class="about-visual"><img src="assets/logo.png" alt="Nature Touch Products logo" /></div>
+        <div>
+          <span class="eyebrow">ABOUT US</span>
+          <h2>Nature Touch Products</h2>
+          <p>We are a growing local brand from A/P Wathar Station, Tal-Koregaon, Dist-Satara, bringing natural food and product ideas to customers through a simple modern shopping experience.</p>
+          <p>This website is designed so the store owner can keep adding and updating products through the Admin Panel without editing the customer-facing pages.</p>
+          <div class="about-stats"><div><strong>WhatsApp</strong><span>Fast direct ordering</span></div><div><strong>Online</strong><span>Payment-ready checkout</span></div><div><strong>Admin</strong><span>Manage your catalog</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="container contact-grid">
+        <div>
+          <span class="eyebrow">GET IN TOUCH</span>
+          <h2>Let’s talk about your next order.</h2>
+          <p>Reach Nature Touch Products on WhatsApp or email. We’re based in Wathar Station, Satara.</p>
+          <div class="contact-links">
+            <a href="https://wa.me/919579901536" target="_blank" rel="noreferrer"><span>WhatsApp</span><strong>+91 9579901536</strong></a>
+            <a href="mailto:nature.touch.products@gmail.com"><span>Email</span><strong>nature.touch.products@gmail.com</strong></a>
+            <a href="https://instagram.com/ahirekar.m" target="_blank" rel="noreferrer"><span>Instagram</span><strong>@ahirekar.m</strong></a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon">📍</div>
+          <h3>Business Location</h3>
+          <p>A/P Wathar Station<br>Tal-Koregaon, Dist-Satara</p>
+          <a class="btn primary full" href="https://www.google.com/maps/search/?api=1&query=Wathar+Station+Satara" target="_blank" rel="noreferrer">Open in Maps</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <div>© <span id="year"></span> Nature Touch Products</div>
+      <div>Pure by Nature, Trusted by You.</div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>

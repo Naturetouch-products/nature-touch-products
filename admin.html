@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel | Nature Touch Products</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div id="loginView" class="login-screen">
+    <div class="login-card">
+      <img src="assets/logo.png" alt="Nature Touch Products" />
+      <span class="eyebrow">STORE ADMIN</span>
+      <h1>Manage your products</h1>
+      <p>Enter the demo admin password to open the catalog manager.</p>
+      <input id="passwordInput" type="password" placeholder="Admin password" class="form-control" />
+      <button id="loginBtn" class="btn primary full">Open Admin Panel</button>
+      <small>Demo password: <strong>NatureTouch123</strong></small>
+      <a href="index.html" class="back-link">← Back to website</a>
+    </div>
+  </div>
+
+  <div id="appView" class="admin-app hidden">
+    <header class="admin-header"><div class="container header-wrap"><div class="header-brand"><img src="assets/logo.png" alt="Logo" /><div><strong>Nature Touch Products</strong><span>Admin Panel</span></div></div><div class="header-actions"><a class="btn light" href="index.html">View Store</a><button id="logoutBtn" class="btn danger">Logout</button></div></div></header>
+    <main class="container admin-main">
+      <section class="stats-grid"><div class="stat"><span>Total products</span><strong id="totalProducts">0</strong></div><div class="stat"><span>Categories</span><strong id="totalCategories">0</strong></div><div class="stat"><span>In stock</span><strong id="inStock">0</strong></div><div class="stat"><span>Out of stock</span><strong id="outStock">0</strong></div></section>
+      <section class="admin-grid">
+        <div class="panel form-panel">
+          <div class="panel-head"><div><span class="eyebrow">PRODUCT MANAGER</span><h2 id="formTitle">Add Product</h2></div><button id="resetBtn" class="text-btn">Reset</button></div>
+          <form id="productForm">
+            <input type="hidden" id="productId" />
+            <label>Product name<input id="name" class="form-control" required /></label>
+            <div class="two-col"><label>Price<input id="price" type="number" min="0" step="0.01" class="form-control" required /></label><label>MRP<input id="mrp" type="number" min="0" step="0.01" class="form-control" /></label></div>
+            <div class="two-col"><label>Weight<input id="weight" class="form-control" placeholder="e.g. 100 g" /></label><label>Category<input id="category" class="form-control" placeholder="e.g. Soaps" /></label></div>
+            <div class="two-col"><label>Stock quantity<input id="stock" type="number" min="0" step="1" class="form-control" value="0" required /></label><label>Photo URL<input id="image" class="form-control" placeholder="https://... or assets/file.jpg" /></label></div>
+            <label>Description<textarea id="description" class="form-control textarea" rows="5"></textarea></label>
+            <label class="check-row"><input id="active" type="checkbox" checked /> <span>Show this product in the store</span></label>
+            <div class="form-actions"><button class="btn primary" type="submit">Save Product</button><button class="btn light" type="button" id="duplicateBtn">Save as New</button></div>
+          </form>
+          <div class="tip"><strong>Photo tip:</strong> For a real hosted store, upload images to your site/storage and paste their public URL here. This demo also supports paths such as <code>assets/my-product.jpg</code>.</div>
+        </div>
+        <div class="panel catalog-panel">
+          <div class="panel-head"><div><span class="eyebrow">CATALOG</span><h2>Your Products</h2></div><input id="adminSearch" class="form-control search" placeholder="Search..." /></div>
+          <div id="adminList" class="admin-list"></div>
+        </div>
+      </section>
+      <section class="panel note-panel"><h3>About this version</h3><p>This starter site stores products in the browser using <strong>localStorage</strong>. That makes it easy to test and manage, but it is not yet a multi-device cloud database. The next production step is a secure backend (for example Supabase/Firebase/Node + database) plus a real payment gateway such as Razorpay.</p></section>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script src="admin.js"></script>
+</body>
+</html>
