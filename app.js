@@ -149,12 +149,16 @@ async function renderProducts() {
   grid.innerHTML = products.length
     ? products.map(product => `
       <article class="product-card">
-        <div class="product-image">
-          <img
-            src="${esc(product.image || "assets/logo.png")}"
-            alt="${esc(product.name)}"
-          >
-        </div>
+       <div class="product-image">
+  <img
+    src="${esc(
+      (product.images && product.images.length
+        ? product.images[0]
+        : product.image) || "assets/logo.png"
+    )}"
+    alt="${esc(product.name)}"
+  >
+</div>
 
         <div class="product-body">
           <span class="pill">${esc(product.category || "Product")}</span>
