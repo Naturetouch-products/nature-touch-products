@@ -196,7 +196,14 @@ function readForm(forceNew = false) {
     weight: $("weight")?.value.trim() || "",
     category: $("category")?.value.trim() || "",
     stock: Number($("stock")?.value || 0),
-    image: $("image")?.value.trim() || "assets/logo.png",
+   image: $("image")?.value.trim() || "assets/logo.png",
+images: [
+  $("image")?.value.trim(),
+  $("image2")?.value.trim(),
+  $("image3")?.value.trim(),
+  $("image4")?.value.trim(),
+  $("image5")?.value.trim()
+].filter(Boolean),
     description: $("description")?.value.trim() || "",
     active: $("active")?.checked ?? true,
     ...(forceNew || !existingId
