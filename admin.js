@@ -232,7 +232,11 @@ function fillForm(product) {
   if ($("weight")) $("weight").value = product.weight || "";
   if ($("category")) $("category").value = product.category || "";
   if ($("stock")) $("stock").value = product.stock || "";
-  if ($("image")) $("image").value = product.image || "";
+ if ($("image")) $("image").value = product.image || "";
+if ($("image2")) $("image2").value = product.images?.[1] || "";
+if ($("image3")) $("image3").value = product.images?.[2] || "";
+if ($("image4")) $("image4").value = product.images?.[3] || "";
+if ($("image5")) $("image5").value = product.images?.[4] || "";
   if ($("description")) $("description").value = product.description || "";
   if ($("active")) $("active").checked = product.active !== false;
 
