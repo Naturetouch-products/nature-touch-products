@@ -38,7 +38,31 @@
             <label>Product name<input id="name" class="form-control" required /></label>
             <div class="two-col"><label>Price<input id="price" type="number" min="0" step="0.01" class="form-control" required /></label><label>MRP<input id="mrp" type="number" min="0" step="0.01" class="form-control" /></label></div>
             <div class="two-col"><label>Weight<input id="weight" class="form-control" placeholder="e.g. 100 g" /></label><label>Category<input id="category" class="form-control" placeholder="e.g. Soaps" /></label></div>
-            <div class="two-col"><label>Stock quantity<input id="stock" type="number" min="0" step="1" class="form-control" value="0" required /></label><label>Photo URL<input id="image" class="form-control" placeholder="https://... or assets/file.jpg" /></label></div>
+            <div class="two-col">
+  <label>Stock quantity
+    <input id="stock" type="number" min="0" step="1" class="form-control" value="0" required />
+  </label>
+
+  <label>Photo 1 URL
+    <input id="image" class="form-control" placeholder="https://... or assets/photo1.jpg" />
+  </label>
+</div>
+
+<label>Photo 2 URL
+  <input id="image2" class="form-control" placeholder="https://... or assets/photo2.jpg" />
+</label>
+
+<label>Photo 3 URL
+  <input id="image3" class="form-control" placeholder="https://... or assets/photo3.jpg" />
+</label>
+
+<label>Photo 4 URL
+  <input id="image4" class="form-control" placeholder="https://... or assets/photo4.jpg" />
+</label>
+
+<label>Photo 5 URL
+  <input id="image5" class="form-control" placeholder="https://... or assets/photo5.jpg" />
+</label>
             <label>Description<textarea id="description" class="form-control textarea" rows="5"></textarea></label>
             <label class="check-row"><input id="active" type="checkbox" checked /> <span>Show this product in the store</span></label>
             <div class="form-actions"><button class="btn primary" type="submit">Save Product</button><button class="btn light" type="button" id="duplicateBtn">Save as New</button></div>
