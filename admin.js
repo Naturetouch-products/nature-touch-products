@@ -21,6 +21,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
+  apiKey: "AIzaSyAHGFmf2Uie08etFM5jq-_-UL091kbn4wQ",
+  authDomain: "nature-touch-products-2e501.firebaseapp.com",
+  projectId: "nature-touch-products-2e501",
+  storageBucket: "nature-touch-products-2e501.firebasestorage.app",
+  messagingSenderId: "237809167619",
+  appId: "1:237809167619:web:6b3378c1298e8a8d2a4d36"
+};
   apiKey: "AIzaSyAHGFmf2Uie08etFM5jq_-_UL091kbn4wQ",
   authDomain: "nature-touch-products-2e501.firebaseapp.com",
   projectId: "nature-touch-products-2e501",
