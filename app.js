@@ -149,11 +149,7 @@ function esc(value) {
   image: "photo.jpg"
 */
 
-function selectedImagePaths() {
-  return selectedFiles
-    .map(file => `products/${file.name}`)
-    .slice(0, 5);
-}
+function getProductImages(product) {
   let images = [];
 
   if (Array.isArray(product.images)) {
@@ -172,9 +168,13 @@ function selectedImagePaths() {
     images = ["assets/logo.png"];
   }
 
+  // Fix old image paths
+  images = images.map(image =>
+    String(image).replace(/^assets\/products\//, "products/")
+  );
+
   return [...new Set(images)];
 }
-
 
 function waUrl(product, quantity = 1) {
   const text =
