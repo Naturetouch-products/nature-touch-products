@@ -28,9 +28,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
 
-/* =========================
+/* ================================
    FIREBASE CONFIG
-========================= */
+================================ */
 
 const firebaseConfig = {
   apiKey: "AIzaSyAHGFmf2Uie08etFM5jq-_-UL091kbn4wQ",
@@ -44,9 +44,9 @@ const firebaseConfig = {
 const ADMIN_UID = "a61TJBh4PRWjGUswfTN70ar0byW2";
 
 
-/* =========================
-   INITIALIZE FIREBASE
-========================= */
+/* ================================
+   FIREBASE INITIALIZE
+================================ */
 
 const app = initializeApp(firebaseConfig);
 
@@ -60,9 +60,9 @@ let products = [];
 let selectedFiles = [];
 
 
-/* =========================
+/* ================================
    TOAST
-========================= */
+================================ */
 
 function toast(message) {
   const el = $("toast");
@@ -81,9 +81,9 @@ function toast(message) {
 }
 
 
-/* =========================
+/* ================================
    LOGIN / ADMIN VIEW
-========================= */
+================================ */
 
 function showLogin() {
   $("loginView")?.classList.remove("hidden");
@@ -98,12 +98,11 @@ function showAdmin() {
 }
 
 
-/* =========================
+/* ================================
    LOGIN
-========================= */
+================================ */
 
 async function login() {
-
   const email = $("emailInput")?.value.trim();
   const password = $("passwordInput")?.value;
 
@@ -135,23 +134,36 @@ async function login() {
 
     console.error("Firebase login error:", error);
 
-    toast("Login error: " + error.code);
+    toast(
+      "Login error: " +
+      (error.code || error.message)
+    );
   }
 }
 
 
-/* =========================
+/* ================================
    LOGOUT
-========================= */
+================================ */
 
 async function logout() {
-  await signOut(auth);
+
+  try {
+
+    await signOut(auth);
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast("Logout failed");
+  }
 }
 
 
-/* =========================
+/* ================================
    LOAD PRODUCTS
-========================= */
+================================ */
 
 async function loadProducts() {
 
@@ -171,16 +183,16 @@ async function loadProducts() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error("Load products error:", error);
 
     toast("Could not load products");
   }
 }
 
 
-/* =========================
-   STATISTICS
-========================= */
+/* ================================
+   STATS
+================================ */
 
 function refreshStats() {
 
@@ -188,17 +200,18 @@ function refreshStats() {
 
   const categories = new Set(
     products
-      .map(p => p.category)
+      .map(product => product.category)
       .filter(Boolean)
   ).size;
 
   const inStock = products.filter(
-    p => Number(p.stock || 0) > 0
+    product => Number(product.stock || 0) > 0
   ).length;
 
   const outStock = products.filter(
-    p => Number(p.stock || 0) <= 0
+    product => Number(product.stock || 0) <= 0
   ).length;
+
 
   if ($("totalProducts")) {
     $("totalProducts").textContent = total;
@@ -218,9 +231,9 @@ function refreshStats() {
 }
 
 
-/* =========================
-   PRODUCT LIST
-========================= */
+/* ================================
+   ADMIN PRODUCT LIST
+================================ */
 
 function renderList() {
 
@@ -228,10 +241,12 @@ function renderList() {
 
   if (!list) return;
 
+
   const search =
     ($("adminSearch")?.value || "")
       .trim()
       .toLowerCase();
+
 
   const filtered = products.filter(product => {
 
@@ -247,7 +262,8 @@ function renderList() {
 
   if (!filtered.length) {
 
-    list.innerHTML = "<p>No products found.</p>";
+    list.innerHTML =
+      "<p>No products found.</p>";
 
     return;
   }
@@ -260,27 +276,39 @@ function renderList() {
       product.images?.[0] ||
       "assets/logo.png";
 
+
     return `
       <div class="admin-item">
 
         <img
           src="${escapeHtml(image)}"
-          alt="${escapeHtml(product.name || "Product")}"
+          alt="${escapeHtml(
+            product.name || "Product"
+          )}"
         >
 
         <div>
+
           <h3>
-            ${escapeHtml(product.name || "Unnamed product")}
+            ${escapeHtml(
+              product.name || "Unnamed product"
+            )}
           </h3>
 
           <p>
-            ₹${Number(product.price || 0).toLocaleString("en-IN")}
-            · Stock: ${Number(product.stock || 0)}
+            ₹${Number(
+              product.price || 0
+            ).toLocaleString("en-IN")}
+            · Stock:
+            ${Number(product.stock || 0)}
           </p>
 
           <p>
-            ${escapeHtml(product.category || "")}
+            ${escapeHtml(
+              product.category || ""
+            )}
           </p>
+
         </div>
 
         <div class="admin-actions">
@@ -310,44 +338,55 @@ function renderList() {
 }
 
 
-/* =========================
-   HTML ESCAPE
-========================= */
+/* ================================
+   SECURITY / HTML ESCAPE
+================================ */
 
 function escapeHtml(value) {
 
-  return String(value ?? "").replace(
-    /[&<>"']/g,
-    char => ({
+  return String(value ?? "")
+    .replace(/[&<>"']/g, char => ({
+
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
-    }[char])
-  );
+
+    }[char]));
+
 }
 
 
-/* =========================
-   IMAGE FILE SELECTION
-========================= */
+/* ================================
+   IMAGE SELECTION
+================================ */
 
 function handleImageSelection(event) {
 
-  const files = Array.from(
-    event.target.files || []
-  );
+  const files =
+    Array.from(
+      event.target.files || []
+    );
 
 
   if (!files.length) {
+
+    selectedFiles = [];
+
+    renderImagePreview();
+
     return;
   }
 
 
+  /* Maximum 5 images */
+
   if (files.length > 5) {
 
-    toast("You can select maximum 5 images");
+    toast(
+      "You can select maximum 5 images"
+    );
 
     event.target.value = "";
 
@@ -359,14 +398,19 @@ function handleImageSelection(event) {
   }
 
 
+  /* Only images */
+
   const invalidFile = files.find(
-    file => !file.type.startsWith("image/")
+    file =>
+      !file.type.startsWith("image/")
   );
 
 
   if (invalidFile) {
 
-    toast("Only image files are allowed");
+    toast(
+      "Only image files are allowed"
+    );
 
     event.target.value = "";
 
@@ -378,14 +422,19 @@ function handleImageSelection(event) {
   }
 
 
+  /* Maximum 5 MB each */
+
   const tooLarge = files.find(
-    file => file.size > 5 * 1024 * 1024
+    file =>
+      file.size > 5 * 1024 * 1024
   );
 
 
   if (tooLarge) {
 
-    toast("Each image must be smaller than 5 MB");
+    toast(
+      "Each image must be smaller than 5 MB"
+    );
 
     event.target.value = "";
 
@@ -403,13 +452,14 @@ function handleImageSelection(event) {
 }
 
 
-/* =========================
+/* ================================
    IMAGE PREVIEW
-========================= */
+================================ */
 
 function renderImagePreview() {
 
-  const preview = $("imagePreview");
+  const preview =
+    $("imagePreview");
 
   if (!preview) return;
 
@@ -422,34 +472,37 @@ function renderImagePreview() {
   }
 
 
-  preview.innerHTML = selectedFiles.map(
-    (file, index) => {
+  preview.innerHTML =
+    selectedFiles.map(
+      (file, index) => {
 
-      const url = URL.createObjectURL(file);
+        const url =
+          URL.createObjectURL(file);
 
-      return `
-        <div class="image-preview-item">
 
-          <img
-            src="${url}"
-            alt="Product image ${index + 1}"
-          >
+        return `
+          <div class="image-preview-item">
 
-          <span>
-            ${index + 1}
-          </span>
+            <img
+              src="${url}"
+              alt="Product image ${index + 1}"
+            >
 
-        </div>
-      `;
+            <span>
+              ${index + 1}
+            </span>
 
-    }
-  ).join("");
+          </div>
+        `;
+
+      }
+    ).join("");
 }
 
 
-/* =========================
-   UPLOAD IMAGES
-========================= */
+/* ================================
+   UPLOAD IMAGES TO FIREBASE STORAGE
+================================ */
 
 async function uploadProductImages(productId) {
 
@@ -460,13 +513,18 @@ async function uploadProductImages(productId) {
 
   const uploadedUrls = [];
 
+  const status =
+    $("uploadStatus");
 
-  const status = $("uploadStatus");
 
+  for (
+    let i = 0;
+    i < selectedFiles.length;
+    i++
+  ) {
 
-  for (let i = 0; i < selectedFiles.length; i++) {
-
-    const file = selectedFiles[i];
+    const file =
+      selectedFiles[i];
 
 
     if (status) {
@@ -476,34 +534,40 @@ async function uploadProductImages(productId) {
     }
 
 
-    const safeName = file.name
-      .replace(/[^a-zA-Z0-9._-]/g, "_");
+    const safeName =
+      file.name.replace(
+        /[^a-zA-Z0-9._-]/g,
+        "_"
+      );
 
 
     const filePath =
       `products/${productId}/${Date.now()}-${i}-${safeName}`;
 
 
-    const storageRef = ref(
-      storage,
-      filePath
-    );
+    const storageRef =
+      ref(storage, filePath);
 
 
-    const snapshot = await uploadBytes(
-      storageRef,
-      file,
-      {
-        contentType: file.type
-      }
-    );
+    const snapshot =
+      await uploadBytes(
+        storageRef,
+        file,
+        {
+          contentType: file.type
+        }
+      );
 
 
     const downloadURL =
-      await getDownloadURL(snapshot.ref);
+      await getDownloadURL(
+        snapshot.ref
+      );
 
 
-    uploadedUrls.push(downloadURL);
+    uploadedUrls.push(
+      downloadURL
+    );
   }
 
 
@@ -518,9 +582,9 @@ async function uploadProductImages(productId) {
 }
 
 
-/* =========================
+/* ================================
    READ FORM
-========================= */
+================================ */
 
 function readForm() {
 
@@ -536,10 +600,14 @@ function readForm() {
       $("name")?.value.trim() || "",
 
     price:
-      Number($("price")?.value || 0),
+      Number(
+        $("price")?.value || 0
+      ),
 
     mrp:
-      Number($("mrp")?.value || 0),
+      Number(
+        $("mrp")?.value || 0
+      ),
 
     weight:
       $("weight")?.value.trim() || "",
@@ -548,21 +616,22 @@ function readForm() {
       $("category")?.value.trim() || "",
 
     stock:
-      Number($("stock")?.value || 0),
+      Number(
+        $("stock")?.value || 0
+      ),
 
     description:
       $("description")?.value.trim() || "",
 
     active:
       $("active")?.checked ?? true
-
   };
 }
 
 
-/* =========================
+/* ================================
    CLEAR FORM
-========================= */
+================================ */
 
 function clearForm() {
 
@@ -600,49 +669,65 @@ function clearForm() {
 
 
   if ($("formTitle")) {
-    $("formTitle").textContent = "Add Product";
+    $("formTitle").textContent =
+      "Add Product";
   }
 }
 
 
-/* =========================
-   EDIT PRODUCT
-========================= */
+/* ================================
+   SHOW PRODUCT IN FORM
+================================ */
 
 function fillForm(product) {
 
   if ($("productId")) {
-    $("productId").value = product.id;
+    $("productId").value =
+      product.id;
   }
+
 
   if ($("name")) {
-    $("name").value = product.name || "";
+    $("name").value =
+      product.name || "";
   }
+
 
   if ($("price")) {
-    $("price").value = product.price || "";
+    $("price").value =
+      product.price || "";
   }
+
 
   if ($("mrp")) {
-    $("mrp").value = product.mrp || "";
+    $("mrp").value =
+      product.mrp || "";
   }
+
 
   if ($("weight")) {
-    $("weight").value = product.weight || "";
+    $("weight").value =
+      product.weight || "";
   }
+
 
   if ($("category")) {
-    $("category").value = product.category || "";
+    $("category").value =
+      product.category || "";
   }
 
+
   if ($("stock")) {
-    $("stock").value = product.stock || "";
+    $("stock").value =
+      product.stock || "";
   }
+
 
   if ($("description")) {
     $("description").value =
       product.description || "";
   }
+
 
   if ($("active")) {
     $("active").checked =
@@ -651,6 +736,7 @@ function fillForm(product) {
 
 
   if ($("formTitle")) {
+
     $("formTitle").textContent =
       "Edit Product";
   }
@@ -674,22 +760,24 @@ function fillForm(product) {
 }
 
 
-/* =========================
-   SHOW EXISTING IMAGES
-========================= */
+/* ================================
+   EXISTING IMAGES
+================================ */
 
 function renderExistingImages(product) {
 
-  const preview = $("imagePreview");
+  const preview =
+    $("imagePreview");
 
   if (!preview) return;
 
 
-  const images = Array.isArray(product.images)
-    ? product.images
-    : product.image
-      ? [product.image]
-      : [];
+  const images =
+    Array.isArray(product.images)
+      ? product.images
+      : product.image
+        ? [product.image]
+        : [];
 
 
   if (!images.length) {
@@ -700,25 +788,30 @@ function renderExistingImages(product) {
   }
 
 
-  preview.innerHTML = images
-    .slice(0, 5)
-    .map(
-      (url, index) => `
-        <div class="image-preview-item existing-image">
+  preview.innerHTML =
+    images
+      .slice(0, 5)
+      .map(
+        (url, index) => `
 
-          <img
-            src="${escapeHtml(url)}"
-            alt="Existing product image ${index + 1}"
+          <div
+            class="image-preview-item existing-image"
           >
 
-          <span>
-            ${index + 1}
-          </span>
+            <img
+              src="${escapeHtml(url)}"
+              alt="Existing product image ${index + 1}"
+            >
 
-        </div>
-      `
-    )
-    .join("");
+            <span>
+              ${index + 1}
+            </span>
+
+          </div>
+
+        `
+      )
+      .join("");
 
 
   if ($("uploadStatus")) {
@@ -729,21 +822,27 @@ function renderExistingImages(product) {
 }
 
 
-/* =========================
+/* ================================
    SAVE PRODUCT
-========================= */
+================================ */
 
-async function saveProduct(event, forceNew = false) {
+async function saveProduct(
+  event,
+  forceNew = false
+) {
 
   event?.preventDefault();
 
 
-  const data = readForm();
+  const data =
+    readForm();
 
 
   if (!data.name) {
 
-    toast("Enter a product name");
+    toast(
+      "Enter a product name"
+    );
 
     return;
   }
@@ -757,37 +856,45 @@ async function saveProduct(event, forceNew = false) {
         : null;
 
 
-    /* =========================
+    /* ============================
        UPDATE EXISTING PRODUCT
-    ========================= */
+    ============================ */
 
     if (productId) {
 
       const productRef =
-        doc(db, "products", productId);
+        doc(
+          db,
+          "products",
+          productId
+        );
 
 
-      let existingProduct =
-        products.find(p => p.id === productId);
+      const existingProduct =
+        products.find(
+          product =>
+            product.id === productId
+        );
 
 
       let images =
-        Array.isArray(existingProduct?.images)
+        Array.isArray(
+          existingProduct?.images
+        )
           ? existingProduct.images
           : existingProduct?.image
             ? [existingProduct.image]
             : [];
 
 
-      /*
-        If new images were selected,
-        upload them and replace the old gallery.
-      */
+      /* Upload new images */
 
       if (selectedFiles.length) {
 
         images =
-          await uploadProductImages(productId);
+          await uploadProductImages(
+            productId
+          );
       }
 
 
@@ -813,7 +920,8 @@ async function saveProduct(event, forceNew = false) {
           images[0] ||
           "assets/logo.png",
 
-        images: images.slice(0, 5),
+        images:
+          images.slice(0, 5),
 
         updatedAt:
           serverTimestamp()
@@ -826,25 +934,24 @@ async function saveProduct(event, forceNew = false) {
       );
 
 
-      toast("Product updated");
+      toast(
+        "Product updated"
+      );
 
     }
 
-
-    /* =========================
+    /* ============================
        ADD NEW PRODUCT
-    ========================= */
+    ============================ */
 
     else {
 
-      /*
-        First create the product so we
-        get a Firestore document ID.
-      */
-
       const productRef =
         await addDoc(
-          collection(db, "products"),
+          collection(
+            db,
+            "products"
+          ),
           {
 
             name: data.name,
@@ -863,7 +970,8 @@ async function saveProduct(event, forceNew = false) {
 
             active: data.active,
 
-            image: "assets/logo.png",
+            image:
+              "assets/logo.png",
 
             images: [],
 
@@ -876,15 +984,10 @@ async function saveProduct(event, forceNew = false) {
         );
 
 
-      /*
-        Now upload selected images
-        inside:
-
-        products/{productId}/
-      */
-
       let images = [];
 
+
+      /* Upload selected images */
 
       if (selectedFiles.length) {
 
@@ -907,13 +1010,14 @@ async function saveProduct(event, forceNew = false) {
 
             updatedAt:
               serverTimestamp()
-
           }
         );
       }
 
 
-      toast("Product added");
+      toast(
+        "Product added"
+      );
     }
 
 
@@ -930,7 +1034,10 @@ async function saveProduct(event, forceNew = false) {
     );
 
 
-    if (error.code === "storage/unauthorized") {
+    if (
+      error.code ===
+      "storage/unauthorized"
+    ) {
 
       toast(
         "Storage permission denied. Check Firebase Storage Rules."
@@ -940,21 +1047,27 @@ async function saveProduct(event, forceNew = false) {
 
       toast(
         "Could not save product: " +
-        (error.message || error.code || "")
+        (
+          error.message ||
+          error.code ||
+          ""
+        )
       );
     }
   }
 }
 
 
-/* =========================
+/* ================================
    DELETE PRODUCT
-========================= */
+================================ */
 
 async function removeProduct(id) {
 
   const product =
-    products.find(p => p.id === id);
+    products.find(
+      p => p.id === id
+    );
 
 
   if (!product) return;
@@ -966,17 +1079,25 @@ async function removeProduct(id) {
     );
 
 
-  if (!confirmed) return;
+  if (!confirmed) {
+    return;
+  }
 
 
   try {
 
     await deleteDoc(
-      doc(db, "products", id)
+      doc(
+        db,
+        "products",
+        id
+      )
     );
 
 
-    toast("Product deleted");
+    toast(
+      "Product deleted"
+    );
 
 
     await loadProducts();
@@ -984,7 +1105,11 @@ async function removeProduct(id) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Delete error:",
+      error
+    );
+
 
     toast(
       "Could not delete product"
@@ -993,13 +1118,15 @@ async function removeProduct(id) {
 }
 
 
-/* =========================
-   EVENT LISTENERS
-========================= */
+/* ================================
+   PAGE EVENTS
+================================ */
 
 document.addEventListener(
   "DOMContentLoaded",
   () => {
+
+    /* Login */
 
     $("loginBtn")?.addEventListener(
       "click",
@@ -1019,11 +1146,15 @@ document.addEventListener(
     );
 
 
+    /* Logout */
+
     $("logoutBtn")?.addEventListener(
       "click",
       logout
     );
 
+
+    /* Reset */
 
     $("resetBtn")?.addEventListener(
       "click",
@@ -1031,19 +1162,31 @@ document.addEventListener(
     );
 
 
+    /* Save as new */
+
     $("duplicateBtn")?.addEventListener(
       "click",
       event =>
-        saveProduct(event, true)
+        saveProduct(
+          event,
+          true
+        )
     );
 
+
+    /* Save product */
 
     $("productForm")?.addEventListener(
       "submit",
       event =>
-        saveProduct(event, false)
+        saveProduct(
+          event,
+          false
+        )
     );
 
+
+    /* Search */
 
     $("adminSearch")?.addEventListener(
       "input",
@@ -1051,9 +1194,7 @@ document.addEventListener(
     );
 
 
-    /*
-      IMAGE FILE PICKER
-    */
+    /* Image picker */
 
     $("imageFiles")?.addEventListener(
       "change",
@@ -1061,9 +1202,7 @@ document.addEventListener(
     );
 
 
-    /*
-      PRODUCT EDIT / DELETE
-    */
+    /* Edit / Delete */
 
     $("adminList")?.addEventListener(
       "click",
@@ -1108,9 +1247,7 @@ document.addEventListener(
     );
 
 
-    /*
-      FIREBASE AUTH STATE
-    */
+    /* Firebase authentication */
 
     onAuthStateChanged(
       auth,
@@ -1124,7 +1261,10 @@ document.addEventListener(
         }
 
 
-        if (user.uid !== ADMIN_UID) {
+        if (
+          user.uid !==
+          ADMIN_UID
+        ) {
 
           signOut(auth);
 
@@ -1139,7 +1279,6 @@ document.addEventListener(
 
 
         showAdmin();
-
       }
     );
 
