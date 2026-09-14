@@ -362,7 +362,10 @@ function renderImagePreview() {
 /* GITHUB IMAGE PATHS */
 
 function selectedImagePaths() {
-
+  return selectedFiles
+    .map(file => `products/${file.name}`)
+    .slice(0, 5);
+}
   return selectedFiles
     .map(
       file =>
