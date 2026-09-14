@@ -366,7 +366,7 @@ function selectedImagePaths() {
   return selectedFiles
     .map(
       file =>
-        `assets/products/${file.name}`
+        `products/${file.name}`
     )
     .slice(0, 5);
 }
