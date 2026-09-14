@@ -66,7 +66,7 @@
 <div id="imagePreview" class="image-preview"></div>
 
 <small id="uploadStatus" class="upload-status">
-  Select up to 5 product images from your phone or laptop.
+  Select up to 5 images. Upload the same image files to GitHub inside assets/products/.
 </small>
             <label>Description<textarea id="description" class="form-control textarea" rows="5"></textarea></label>
             <label class="check-row"><input id="active" type="checkbox" checked /> <span>Show this product in the store</span></label>
@@ -75,8 +75,8 @@
           <div class="tip">
   <strong>Photo tip:</strong>
   Select up to 5 images from your phone or laptop.
-  The images will be uploaded automatically to Firebase Storage
-  when you save the product.
+  First upload the image files to GitHub inside
+  <strong>assets/products/</strong>, then select those same files here.
 </div>
 </div>
         <div class="panel catalog-panel">
@@ -87,10 +87,10 @@
       <section class="panel note-panel">
   <h3>About this version</h3>
   <p>
-    Products are stored securely in Firebase Firestore, and product images
-    are uploaded to Firebase Storage. You can manage your products from this
-    Admin Panel and update the customer-facing store without editing the
-    website code.
+    Products and product information are stored in Firebase Firestore.
+    Product images are served from the website's GitHub assets folder.
+    You can manage your products from this Admin Panel without editing
+    the customer-facing product pages.
   </p>
 </section>
     </main>
