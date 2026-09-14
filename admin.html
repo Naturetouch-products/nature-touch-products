@@ -78,12 +78,21 @@
   The images will be uploaded automatically to Firebase Storage
   when you save the product.
 </div>
+</div>
         <div class="panel catalog-panel">
           <div class="panel-head"><div><span class="eyebrow">CATALOG</span><h2>Your Products</h2></div><input id="adminSearch" class="form-control search" placeholder="Search..." /></div>
           <div id="adminList" class="admin-list"></div>
         </div>
       </section>
-      <section class="panel note-panel"><h3>About this version</h3><p>This starter site stores products in the browser using <strong>localStorage</strong>. That makes it easy to test and manage, but it is not yet a multi-device cloud database. The next production step is a secure backend (for example Supabase/Firebase/Node + database) plus a real payment gateway such as Razorpay.</p></section>
+      <section class="panel note-panel">
+  <h3>About this version</h3>
+  <p>
+    Products are stored securely in Firebase Firestore, and product images
+    are uploaded to Firebase Storage. You can manage your products from this
+    Admin Panel and update the customer-facing store without editing the
+    website code.
+  </p>
+</section>
     </main>
   </div>
   <div id="toast" class="toast"></div>
