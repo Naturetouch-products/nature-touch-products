@@ -72,8 +72,12 @@
             <label class="check-row"><input id="active" type="checkbox" checked /> <span>Show this product in the store</span></label>
             <div class="form-actions"><button class="btn primary" type="submit">Save Product</button><button class="btn light" type="button" id="duplicateBtn">Save as New</button></div>
           </form>
-          <div class="tip"><strong>Photo tip:</strong> For a real hosted store, upload images to your site/storage and paste their public URL here. This demo also supports paths such as <code>assets/my-product.jpg</code>.</div>
-        </div>
+          <div class="tip">
+  <strong>Photo tip:</strong>
+  Select up to 5 images from your phone or laptop.
+  The images will be uploaded automatically to Firebase Storage
+  when you save the product.
+</div>
         <div class="panel catalog-panel">
           <div class="panel-head"><div><span class="eyebrow">CATALOG</span><h2>Your Products</h2></div><input id="adminSearch" class="form-control search" placeholder="Search..." /></div>
           <div id="adminList" class="admin-list"></div>
