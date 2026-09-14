@@ -149,7 +149,11 @@ function esc(value) {
   image: "photo.jpg"
 */
 
-function getProductImages(product) {
+function selectedImagePaths() {
+  return selectedFiles
+    .map(file => `products/${file.name}`)
+    .slice(0, 5);
+}
   let images = [];
 
   if (Array.isArray(product.images)) {
