@@ -264,59 +264,59 @@ function escapeHtml(value) {
 
 function handleImageSelection(event) {
 
-  const files =
-    Array.from(
-      event.target.files || []
-    );
+  const newFiles = Array.from(event.target.files || []);
 
-  if (!files.length) {
+  if (!newFiles.length) return;
 
-    selectedFiles = [];
-    renderImagePreview();
+  const mergedFiles = [
+    ...selectedFiles,
+    ...newFiles
+  ];
 
+  const uniqueFiles = mergedFiles.filter(
+    (file, index, array) =>
+      index === array.findIndex(
+        item =>
+          item.name === file.name &&
+          item.size === file.size &&
+          item.lastModified === file.lastModified
+      )
+  );
+
+  if (uniqueFiles.length > 5) {
+    toast("Maximum 5 images allowed");
     return;
   }
 
-  if (files.length > 5) {
-
-    toast("You can select maximum 5 images");
-
-    event.target.value = "";
-    selectedFiles = [];
-
-    renderImagePreview();
-
-    return;
-  }
-
-  const invalidFile =
-    files.find(
-      file => !file.type.startsWith("image/")
-    );
+  const invalidFile = uniqueFiles.find(
+    file => !file.type.startsWith("image/")
+  );
 
   if (invalidFile) {
-
     toast("Only image files are allowed");
-
-    event.target.value = "";
-    selectedFiles = [];
-
-    renderImagePreview();
-
     return;
   }
 
-  selectedFiles = files;
+  const tooLarge = uniqueFiles.find(
+    file => file.size > 5 * 1024 * 1024
+  );
+
+  if (tooLarge) {
+    toast("Each image must be smaller than 5 MB");
+    return;
+  }
+
+  selectedFiles = uniqueFiles;
 
   renderImagePreview();
 
   if ($("uploadStatus")) {
-
     $("uploadStatus").textContent =
-      "Selected. These same files must be uploaded to GitHub inside assets/products/";
+      `${selectedFiles.length} image(s) selected. Maximum 5.`;
   }
-}
 
+  event.target.value = "";
+}
 /* IMAGE PREVIEW */
 
 function renderImagePreview() {
