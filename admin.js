@@ -367,12 +367,6 @@ function refreshStats() {
       outStock;
   }
 }
-
-
-/* =========================
-   RENDER PRODUCT LIST
-========================= */
-
 function renderList() {
 
   const list =
@@ -653,8 +647,6 @@ function renderImagePreview() {
     preview.innerHTML = "";
 
     return;
-  }
-
 
   preview.innerHTML =
     selectedFiles
@@ -698,14 +690,43 @@ function renderImagePreview() {
    GITHUB IMAGE PATHS
 ========================= */
 
-function selectedImagePaths() {
+/* =========================
+   CLOUDINARY IMAGE UPLOAD
+========================= */
 
-  return selectedFiles
-    .map(
-      file =>
-        `products/${file.name}`
-    )
-    .slice(0, 5);
+async function selectedImagePaths() {
+
+  const uploadUrl =
+    "https://api.cloudinary.com/v1_1/uhv0b2cw/image/upload";
+
+  const uploadPreset = "ojhtlrz5";
+
+  const imageUrls = [];
+
+  for (const file of selectedFiles.slice(0, 5)) {
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error("Image upload failed");
+    }
+
+    const data = await response.json();
+
+    if (data.secure_url) {
+      imageUrls.push(data.secure_url);
+    }
+  }
+
+  return imageUrls;
 }
 
 
@@ -1096,7 +1117,7 @@ async function saveProduct(
       if (selectedFiles.length) {
 
         images =
-          selectedImagePaths();
+         await selectedImagePaths();
       }
 
 
@@ -1162,10 +1183,10 @@ async function saveProduct(
 
     else {
 
-      const images =
-        selectedFiles.length
-          ? selectedImagePaths()
-          : [];
+     const images =
+  selectedFiles.length
+    ? await selectedImagePaths()
+    : [];
 
 
       await addDoc(
