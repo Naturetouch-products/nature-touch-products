@@ -647,7 +647,7 @@ function renderImagePreview() {
     preview.innerHTML = "";
 
     return;
-
+    }
   preview.innerHTML =
     selectedFiles
       .map(
