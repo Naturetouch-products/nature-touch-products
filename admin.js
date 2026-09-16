@@ -20,13 +20,12 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-
 /* =========================
    FIREBASE CONFIG
 ========================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAHGFmfU2ie08etFM5jq-_-UL091kbn4w",
+  apiKey: "AIzaSyAHGFmf2Uie08etFM5jq-_-UL091kbn4wQ",
   authDomain: "nature-touch-products-2e501.firebaseapp.com",
   projectId: "nature-touch-products-2e501",
   storageBucket: "nature-touch-products-2e501.firebasestorage.app",
