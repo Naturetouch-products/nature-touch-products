@@ -26,7 +26,7 @@ import {
 ========================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAHGFmf2Uie08etFM5jq-_-UL091kbn4wQ",
+  apiKey: "AIzaSyAHGFmfU2ie08etFM5jq-_-UL091kbn4wQ",
   authDomain: "nature-touch-products-2e501.firebaseapp.com",
   projectId: "nature-touch-products-2e501",
   storageBucket: "nature-touch-products-2e501.firebasestorage.app",
@@ -116,27 +116,19 @@ async function login() {
   const password =
     $("passwordInput")?.value || "";
 
-
   if (!email) {
-
     toast("Enter your email");
-
     return;
   }
-
 
   if (!password) {
-
     toast("Enter your password");
-
     return;
   }
-
 
   try {
 
     toast("Logging in...");
-
 
     const result =
       await signInWithEmailAndPassword(
@@ -144,7 +136,6 @@ async function login() {
         email,
         password
       );
-
 
     if (result.user.uid !== ADMIN_UID) {
 
@@ -155,9 +146,7 @@ async function login() {
       return;
     }
 
-
     toast("Login successful");
-
 
   } catch (error) {
 
@@ -166,12 +155,10 @@ async function login() {
       error
     );
 
-
     let message =
       error.code ||
       error.message ||
       "Login failed";
-
 
     if (
       error.code ===
@@ -204,9 +191,7 @@ async function login() {
 
       message =
         "Invalid email";
-
     }
-
 
     toast("Login error: " + message);
   }
@@ -242,12 +227,8 @@ function fixImagePath(image) {
     return "assets/logo.png";
   }
 
-
   return String(image)
-    .replace(
-      /^assets\/products\//,
-      "products/"
-    );
+    .replace(/^assets\/products\//, "products/");
 }
 
 
@@ -267,7 +248,6 @@ async function loadProducts() {
         )
       );
 
-
     products =
       snapshot.docs.map(item => ({
 
@@ -277,11 +257,9 @@ async function loadProducts() {
 
       }));
 
-
     renderList();
 
     refreshStats();
-
 
   } catch (error) {
 
@@ -311,7 +289,6 @@ function refreshStats() {
   const total =
     products.length;
 
-
   const categories =
     new Set(
       products
@@ -321,7 +298,6 @@ function refreshStats() {
         .filter(Boolean)
     ).size;
 
-
   const inStock =
     products.filter(
       product =>
@@ -329,7 +305,6 @@ function refreshStats() {
           product.stock || 0
         ) > 0
     ).length;
-
 
   const outStock =
     products.filter(
@@ -339,13 +314,11 @@ function refreshStats() {
         ) <= 0
     ).length;
 
-
   if ($("totalProducts")) {
 
     $("totalProducts").textContent =
       total;
   }
-
 
   if ($("totalCategories")) {
 
@@ -353,13 +326,11 @@ function refreshStats() {
       categories;
   }
 
-
   if ($("inStock")) {
 
     $("inStock").textContent =
       inStock;
   }
-
 
   if ($("outStock")) {
 
@@ -367,14 +338,18 @@ function refreshStats() {
       outStock;
   }
 }
+
+
+/* =========================
+   RENDER PRODUCT LIST
+========================= */
+
 function renderList() {
 
   const list =
     $("adminList");
 
-
   if (!list) return;
-
 
   const search =
     (
@@ -383,7 +358,6 @@ function renderList() {
     )
       .trim()
       .toLowerCase();
-
 
   const filtered =
     products.filter(product => {
@@ -398,13 +372,11 @@ function renderList() {
 
       `.toLowerCase();
 
-
       return (
         !search ||
         text.includes(search)
       );
     });
-
 
   if (!filtered.length) {
 
@@ -414,10 +386,8 @@ function renderList() {
     return;
   }
 
-
   list.innerHTML =
     filtered.map(product => {
-
 
       const image =
         fixImagePath(
@@ -430,7 +400,6 @@ function renderList() {
               : ""
           )
         );
-
 
       return `
 
@@ -473,7 +442,6 @@ function renderList() {
 
           </div>
 
-
           <div class="admin-actions">
 
             <button
@@ -483,7 +451,6 @@ function renderList() {
             >
               Edit
             </button>
-
 
             <button
               type="button"
@@ -540,15 +507,12 @@ function handleImageSelection(event) {
       event.target.files || []
     );
 
-
   if (!newFiles.length) return;
-
 
   const mergedFiles = [
     ...selectedFiles,
     ...newFiles
   ];
-
 
   const uniqueFiles =
     mergedFiles.filter(
@@ -563,7 +527,6 @@ function handleImageSelection(event) {
         )
     );
 
-
   if (uniqueFiles.length > 5) {
 
     toast(
@@ -573,7 +536,6 @@ function handleImageSelection(event) {
     return;
   }
 
-
   const invalidFile =
     uniqueFiles.find(
       file =>
@@ -581,7 +543,6 @@ function handleImageSelection(event) {
           "image/"
         )
     );
-
 
   if (invalidFile) {
 
@@ -592,14 +553,12 @@ function handleImageSelection(event) {
     return;
   }
 
-
   const tooLarge =
     uniqueFiles.find(
       file =>
         file.size >
         5 * 1024 * 1024
     );
-
 
   if (tooLarge) {
 
@@ -610,20 +569,16 @@ function handleImageSelection(event) {
     return;
   }
 
-
   selectedFiles =
     uniqueFiles;
 
-
   renderImagePreview();
-
 
   if ($("uploadStatus")) {
 
     $("uploadStatus").textContent =
       `${selectedFiles.length} image(s) selected. Maximum 5.`;
   }
-
 
   event.target.value = "";
 }
@@ -638,16 +593,15 @@ function renderImagePreview() {
   const preview =
     $("imagePreview");
 
-
   if (!preview) return;
-
 
   if (!selectedFiles.length) {
 
     preview.innerHTML = "";
 
     return;
-    }
+  }
+
   preview.innerHTML =
     selectedFiles
       .map(
@@ -657,7 +611,6 @@ function renderImagePreview() {
             URL.createObjectURL(
               file
             );
-
 
           return `
 
@@ -690,55 +643,35 @@ function renderImagePreview() {
    GITHUB IMAGE PATHS
 ========================= */
 
-/* =========================
-   CLOUDINARY IMAGE UPLOAD
-========================= */
+/*
+   IMPORTANT:
 
-async function selectedImagePaths() {
-  const uploadUrl =
-    "https://api.cloudinary.com/v1_1/uhv0b2cw/image/upload";
+   First upload the selected image files
+   to the GitHub "products/" folder.
 
-  const uploadPreset = "ojhtlrz5";
+   Example:
 
-  const imageUrls = [];
+   products/soap.jpg
+   products/moringa.jpg
 
-  for (const file of selectedFiles.slice(0, 5)) {
-    const formData = new FormData();
+   Then this function saves those paths
+   into Firestore.
 
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
+   No Cloudinary.
+   No Firebase Storage.
+*/
 
-    let response;
+function selectedImagePaths() {
 
-    try {
-      response = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData
-      });
-    } catch (error) {
-      throw new Error("Cloudinary network error: " + error.message);
-    }
-
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      const message =
-        data?.error?.message ||
-        response.headers.get("X-Cld-Error") ||
-        `Cloudinary error (${response.status})`;
-
-      throw new Error(message);
-    }
-
-    if (!data.secure_url) {
-      throw new Error("Cloudinary did not return an image URL");
-    }
-
-    imageUrls.push(data.secure_url);
-  }
-
-  return imageUrls;
+  return selectedFiles
+    .slice(0, 5)
+    .map(
+      file =>
+        "products/" +
+        encodeURIComponent(file.name)
+    );
 }
+
 
 /* =========================
    READ FORM
@@ -752,11 +685,9 @@ function readForm() {
       $("productId")?.value ||
       "",
 
-
     name:
       $("name")?.value.trim() ||
       "",
-
 
     price:
       Number(
@@ -764,23 +695,19 @@ function readForm() {
         0
       ),
 
-
     mrp:
       Number(
         $("mrp")?.value ||
         0
       ),
 
-
     weight:
       $("weight")?.value.trim() ||
       "",
 
-
     category:
       $("category")?.value.trim() ||
       "",
-
 
     stock:
       Number(
@@ -788,11 +715,9 @@ function readForm() {
         0
       ),
 
-
     description:
       $("description")?.value.trim() ||
       "",
-
 
     active:
       $("active")?.checked ??
@@ -810,27 +735,22 @@ function clearForm() {
 
   $("productForm")?.reset();
 
-
   if ($("productId")) {
 
     $("productId").value = "";
   }
-
 
   if ($("active")) {
 
     $("active").checked = true;
   }
 
-
   selectedFiles = [];
-
 
   if ($("imageFiles")) {
 
     $("imageFiles").value = "";
   }
-
 
   if ($("imagePreview")) {
 
@@ -838,13 +758,11 @@ function clearForm() {
       "";
   }
 
-
   if ($("uploadStatus")) {
 
     $("uploadStatus").textContent =
       "Select up to 5 product images from your phone or laptop.";
   }
-
 
   if ($("formTitle")) {
 
@@ -866,13 +784,11 @@ function fillForm(product) {
       product.id;
   }
 
-
   if ($("name")) {
 
     $("name").value =
       product.name || "";
   }
-
 
   if ($("price")) {
 
@@ -880,13 +796,11 @@ function fillForm(product) {
       product.price || "";
   }
 
-
   if ($("mrp")) {
 
     $("mrp").value =
       product.mrp || "";
   }
-
 
   if ($("weight")) {
 
@@ -894,13 +808,11 @@ function fillForm(product) {
       product.weight || "";
   }
 
-
   if ($("category")) {
 
     $("category").value =
       product.category || "";
   }
-
 
   if ($("stock")) {
 
@@ -908,13 +820,11 @@ function fillForm(product) {
       product.stock || "";
   }
 
-
   if ($("description")) {
 
     $("description").value =
       product.description || "";
   }
-
 
   if ($("active")) {
 
@@ -922,27 +832,22 @@ function fillForm(product) {
       product.active !== false;
   }
 
-
   if ($("formTitle")) {
 
     $("formTitle").textContent =
       "Edit Product";
   }
 
-
   selectedFiles = [];
-
 
   if ($("imageFiles")) {
 
     $("imageFiles").value = "";
   }
 
-
   renderExistingImages(
     product
   );
-
 
   window.scrollTo({
 
@@ -965,12 +870,9 @@ function renderExistingImages(
   const preview =
     $("imagePreview");
 
-
   if (!preview) return;
 
-
   let images = [];
-
 
   if (
     Array.isArray(
@@ -992,12 +894,10 @@ function renderExistingImages(
     ];
   }
 
-
   images =
     images
       .map(fixImagePath)
       .slice(0, 5);
-
 
   if (!images.length) {
 
@@ -1005,7 +905,6 @@ function renderExistingImages(
 
     return;
   }
-
 
   preview.innerHTML =
     images
@@ -1033,7 +932,6 @@ function renderExistingImages(
       )
       .join("");
 
-
   if ($("uploadStatus")) {
 
     $("uploadStatus").textContent =
@@ -1053,10 +951,8 @@ async function saveProduct(
 
   event?.preventDefault();
 
-
   const data =
     readForm();
-
 
   if (!data.name) {
 
@@ -1066,7 +962,6 @@ async function saveProduct(
 
     return;
   }
-
 
   try {
 
@@ -1089,7 +984,6 @@ async function saveProduct(
           productId
         );
 
-
       const existingProduct =
         products.find(
           product =>
@@ -1097,9 +991,7 @@ async function saveProduct(
             productId
         );
 
-
       let images = [];
-
 
       if (
         Array.isArray(
@@ -1124,16 +1016,19 @@ async function saveProduct(
       }
 
 
+      /*
+         If new images were selected,
+         use their GitHub paths.
+      */
+
       if (selectedFiles.length) {
 
         images =
-         await selectedImagePaths();
+          selectedImagePaths();
       }
-
 
       images =
         images.slice(0, 5);
-
 
       const updateData = {
 
@@ -1172,18 +1067,14 @@ async function saveProduct(
           serverTimestamp()
       };
 
-
       await updateDoc(
         productRef,
         updateData
       );
 
-
       toast(
         "Product updated"
       );
-
-
     }
 
 
@@ -1193,11 +1084,10 @@ async function saveProduct(
 
     else {
 
-     const images =
-  selectedFiles.length
-    ? await selectedImagePaths()
-    : [];
-
+      const images =
+        selectedFiles.length
+          ? selectedImagePaths()
+          : [];
 
       await addDoc(
         collection(
@@ -1246,18 +1136,14 @@ async function saveProduct(
         }
       );
 
-
       toast(
         "Product added"
       );
     }
 
-
     clearForm();
 
-
     await loadProducts();
-
 
   } catch (error) {
 
@@ -1265,7 +1151,6 @@ async function saveProduct(
       "Save product error:",
       error
     );
-
 
     toast(
       "Could not save product: " +
@@ -1292,18 +1177,14 @@ async function removeProduct(
       p => p.id === id
     );
 
-
   if (!product) return;
-
 
   const confirmed =
     confirm(
       `Delete "${product.name}"?`
     );
 
-
   if (!confirmed) return;
-
 
   try {
 
@@ -1315,14 +1196,11 @@ async function removeProduct(
       )
     );
 
-
     toast(
       "Product deleted"
     );
 
-
     await loadProducts();
-
 
   } catch (error) {
 
@@ -1330,7 +1208,6 @@ async function removeProduct(
       "Delete error:",
       error
     );
-
 
     toast(
       "Could not delete product: " +
@@ -1352,14 +1229,12 @@ document.addEventListener(
   "DOMContentLoaded",
   () => {
 
-
     /* LOGIN */
 
     $("loginBtn")?.addEventListener(
       "click",
       login
     );
-
 
     $("passwordInput")?.addEventListener(
       "keydown",
@@ -1444,12 +1319,10 @@ document.addEventListener(
             "[data-edit]"
           );
 
-
         const deleteButton =
           event.target.closest(
             "[data-delete]"
           );
-
 
         if (editButton) {
 
@@ -1461,7 +1334,6 @@ document.addEventListener(
                   .edit
             );
 
-
           if (product) {
 
             fillForm(
@@ -1469,7 +1341,6 @@ document.addEventListener(
             );
           }
         }
-
 
         if (deleteButton) {
 
@@ -1498,14 +1369,12 @@ document.addEventListener(
             : "Not logged in"
         );
 
-
         if (!user) {
 
           showLogin();
 
           return;
         }
-
 
         if (
           user.uid !==
@@ -1522,7 +1391,6 @@ document.addEventListener(
 
           return;
         }
-
 
         showAdmin();
 
