@@ -695,7 +695,6 @@ function renderImagePreview() {
 ========================= */
 
 async function selectedImagePaths() {
-
   const uploadUrl =
     "https://api.cloudinary.com/v1_1/uhv0b2cw/image/upload";
 
@@ -704,36 +703,42 @@ async function selectedImagePaths() {
   const imageUrls = [];
 
   for (const file of selectedFiles.slice(0, 5)) {
-
     const formData = new FormData();
 
     formData.append("file", file);
     formData.append("upload_preset", uploadPreset);
 
-    const response = await fetch(uploadUrl, {
-      method: "POST",
-      body: formData
-    });
+    let response;
 
-   if (!response.ok) {
-  const errorData = await response.json().catch(() => ({}));
-
-  throw new Error(
-    errorData?.error?.message ||
-    "Cloudinary upload failed"
-  );
-}
-
-    const data = await response.json();
-
-    if (data.secure_url) {
-      imageUrls.push(data.secure_url);
+    try {
+      response = await fetch(uploadUrl, {
+        method: "POST",
+        body: formData
+      });
+    } catch (error) {
+      throw new Error("Cloudinary network error: " + error.message);
     }
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      const message =
+        data?.error?.message ||
+        response.headers.get("X-Cld-Error") ||
+        `Cloudinary error (${response.status})`;
+
+      throw new Error(message);
+    }
+
+    if (!data.secure_url) {
+      throw new Error("Cloudinary did not return an image URL");
+    }
+
+    imageUrls.push(data.secure_url);
   }
 
   return imageUrls;
 }
-
 
 /* =========================
    READ FORM
