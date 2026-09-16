@@ -26,7 +26,7 @@ import {
 ========================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAHGFmfU2ie08etFM5jq-_-UL091kbn4wQ",
+  apiKey: "AIzaSyAHGFmfU2ie08etFM5jq-_-UL091kbn4w",
   authDomain: "nature-touch-products-2e501.firebaseapp.com",
   projectId: "nature-touch-products-2e501",
   storageBucket: "nature-touch-products-2e501.firebasestorage.app",
@@ -42,9 +42,7 @@ const ADMIN_UID = "a61TJBh4PRWjGUswfTN70ar0byW2";
 ========================= */
 
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
-
 const db = getFirestore(app);
 
 
@@ -55,7 +53,6 @@ const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 
 let products = [];
-
 let selectedFiles = [];
 
 
@@ -64,7 +61,6 @@ let selectedFiles = [];
 ========================= */
 
 function toast(message) {
-
   const el = $("toast");
 
   if (!el) {
@@ -73,7 +69,6 @@ function toast(message) {
   }
 
   el.textContent = message;
-
   el.classList.add("show");
 
   setTimeout(() => {
@@ -87,17 +82,13 @@ function toast(message) {
 ========================= */
 
 function showLogin() {
-
   $("loginView")?.classList.remove("hidden");
-
   $("appView")?.classList.add("hidden");
 }
 
 
 function showAdmin() {
-
   $("loginView")?.classList.add("hidden");
-
   $("appView")?.classList.remove("hidden");
 
   loadProducts();
@@ -109,7 +100,6 @@ function showAdmin() {
 ========================= */
 
 async function login() {
-
   const email =
     $("emailInput")?.value.trim();
 
@@ -127,7 +117,6 @@ async function login() {
   }
 
   try {
-
     toast("Logging in...");
 
     const result =
@@ -138,18 +127,14 @@ async function login() {
       );
 
     if (result.user.uid !== ADMIN_UID) {
-
       await signOut(auth);
-
       toast("This account is not authorized");
-
       return;
     }
 
     toast("Login successful");
 
   } catch (error) {
-
     console.error(
       "Firebase login error:",
       error
@@ -164,33 +149,25 @@ async function login() {
       error.code ===
       "auth/invalid-credential"
     ) {
-
-      message =
-        "Invalid email or password";
+      message = "Invalid email or password";
 
     } else if (
       error.code ===
       "auth/user-not-found"
     ) {
-
-      message =
-        "User not found";
+      message = "User not found";
 
     } else if (
       error.code ===
       "auth/wrong-password"
     ) {
-
-      message =
-        "Wrong password";
+      message = "Wrong password";
 
     } else if (
       error.code ===
       "auth/invalid-email"
     ) {
-
-      message =
-        "Invalid email";
+      message = "Invalid email";
     }
 
     toast("Login error: " + message);
@@ -203,15 +180,10 @@ async function login() {
 ========================= */
 
 async function logout() {
-
   try {
-
     await signOut(auth);
-
   } catch (error) {
-
     console.error(error);
-
     toast("Logout failed");
   }
 }
@@ -222,13 +194,15 @@ async function logout() {
 ========================= */
 
 function fixImagePath(image) {
-
   if (!image) {
     return "assets/logo.png";
   }
 
   return String(image)
-    .replace(/^assets\/products\//, "products/");
+    .replace(
+      /^assets\/products\//,
+      "products/"
+    );
 }
 
 
@@ -237,9 +211,7 @@ function fixImagePath(image) {
 ========================= */
 
 async function loadProducts() {
-
   try {
-
     const snapshot =
       await getDocs(
         collection(
@@ -250,19 +222,14 @@ async function loadProducts() {
 
     products =
       snapshot.docs.map(item => ({
-
         id: item.id,
-
         ...item.data()
-
       }));
 
     renderList();
-
     refreshStats();
 
   } catch (error) {
-
     console.error(
       "Load products error:",
       error
@@ -285,7 +252,6 @@ async function loadProducts() {
 ========================= */
 
 function refreshStats() {
-
   const total =
     products.length;
 
@@ -315,25 +281,21 @@ function refreshStats() {
     ).length;
 
   if ($("totalProducts")) {
-
     $("totalProducts").textContent =
       total;
   }
 
   if ($("totalCategories")) {
-
     $("totalCategories").textContent =
       categories;
   }
 
   if ($("inStock")) {
-
     $("inStock").textContent =
       inStock;
   }
 
   if ($("outStock")) {
-
     $("outStock").textContent =
       outStock;
   }
@@ -345,7 +307,6 @@ function refreshStats() {
 ========================= */
 
 function renderList() {
-
   const list =
     $("adminList");
 
@@ -361,15 +322,10 @@ function renderList() {
 
   const filtered =
     products.filter(product => {
-
       const text = `
-
         ${product.name || ""}
-
         ${product.category || ""}
-
         ${product.description || ""}
-
       `.toLowerCase();
 
       return (
@@ -379,10 +335,8 @@ function renderList() {
     });
 
   if (!filtered.length) {
-
     list.innerHTML =
       "<p>No products found.</p>";
-
     return;
   }
 
@@ -402,7 +356,6 @@ function renderList() {
         );
 
       return `
-
         <div class="admin-item">
 
           <img
@@ -463,7 +416,6 @@ function renderList() {
           </div>
 
         </div>
-
       `;
 
     }).join("");
@@ -475,22 +427,15 @@ function renderList() {
 ========================= */
 
 function escapeHtml(value) {
-
   return String(value ?? "")
     .replace(
       /[&<>"']/g,
       char => ({
-
         "&": "&amp;",
-
         "<": "&lt;",
-
         ">": "&gt;",
-
         '"': "&quot;",
-
         "'": "&#039;"
-
       }[char])
     );
 }
@@ -501,7 +446,6 @@ function escapeHtml(value) {
 ========================= */
 
 function handleImageSelection(event) {
-
   const newFiles =
     Array.from(
       event.target.files || []
@@ -528,11 +472,9 @@ function handleImageSelection(event) {
     );
 
   if (uniqueFiles.length > 5) {
-
     toast(
       "Maximum 5 images allowed"
     );
-
     return;
   }
 
@@ -545,11 +487,9 @@ function handleImageSelection(event) {
     );
 
   if (invalidFile) {
-
     toast(
       "Only image files are allowed"
     );
-
     return;
   }
 
@@ -561,11 +501,9 @@ function handleImageSelection(event) {
     );
 
   if (tooLarge) {
-
     toast(
       "Each image must be smaller than 5 MB"
     );
-
     return;
   }
 
@@ -575,7 +513,6 @@ function handleImageSelection(event) {
   renderImagePreview();
 
   if ($("uploadStatus")) {
-
     $("uploadStatus").textContent =
       `${selectedFiles.length} image(s) selected. Maximum 5.`;
   }
@@ -589,16 +526,13 @@ function handleImageSelection(event) {
 ========================= */
 
 function renderImagePreview() {
-
   const preview =
     $("imagePreview");
 
   if (!preview) return;
 
   if (!selectedFiles.length) {
-
     preview.innerHTML = "";
-
     return;
   }
 
@@ -613,7 +547,6 @@ function renderImagePreview() {
             );
 
           return `
-
             <div
               class="image-preview-item"
             >
@@ -630,9 +563,7 @@ function renderImagePreview() {
               </span>
 
             </div>
-
           `;
-
         }
       )
       .join("");
@@ -645,24 +576,16 @@ function renderImagePreview() {
 
 /*
    IMPORTANT:
+   Firebase Storage and Cloudinary are NOT used.
 
-   First upload the selected image files
-   to the GitHub "products/" folder.
+   Images must be manually uploaded
+   to the GitHub "products" folder.
 
    Example:
-
-   products/soap.jpg
-   products/moringa.jpg
-
-   Then this function saves those paths
-   into Firestore.
-
-   No Cloudinary.
-   No Firebase Storage.
+   products/moringa-powder.jpg
 */
 
 function selectedImagePaths() {
-
   return selectedFiles
     .slice(0, 5)
     .map(
@@ -678,7 +601,6 @@ function selectedImagePaths() {
 ========================= */
 
 function readForm() {
-
   return {
 
     id:
@@ -722,7 +644,6 @@ function readForm() {
     active:
       $("active")?.checked ??
       true
-
   };
 }
 
@@ -732,40 +653,32 @@ function readForm() {
 ========================= */
 
 function clearForm() {
-
   $("productForm")?.reset();
 
   if ($("productId")) {
-
     $("productId").value = "";
   }
 
   if ($("active")) {
-
     $("active").checked = true;
   }
 
   selectedFiles = [];
 
   if ($("imageFiles")) {
-
     $("imageFiles").value = "";
   }
 
   if ($("imagePreview")) {
-
-    $("imagePreview").innerHTML =
-      "";
+    $("imagePreview").innerHTML = "";
   }
 
   if ($("uploadStatus")) {
-
     $("uploadStatus").textContent =
       "Select up to 5 product images from your phone or laptop.";
   }
 
   if ($("formTitle")) {
-
     $("formTitle").textContent =
       "Add Product";
   }
@@ -779,61 +692,51 @@ function clearForm() {
 function fillForm(product) {
 
   if ($("productId")) {
-
     $("productId").value =
       product.id;
   }
 
   if ($("name")) {
-
     $("name").value =
       product.name || "";
   }
 
   if ($("price")) {
-
     $("price").value =
       product.price || "";
   }
 
   if ($("mrp")) {
-
     $("mrp").value =
       product.mrp || "";
   }
 
   if ($("weight")) {
-
     $("weight").value =
       product.weight || "";
   }
 
   if ($("category")) {
-
     $("category").value =
       product.category || "";
   }
 
   if ($("stock")) {
-
     $("stock").value =
       product.stock || "";
   }
 
   if ($("description")) {
-
     $("description").value =
       product.description || "";
   }
 
   if ($("active")) {
-
     $("active").checked =
       product.active !== false;
   }
 
   if ($("formTitle")) {
-
     $("formTitle").textContent =
       "Edit Product";
   }
@@ -841,20 +744,14 @@ function fillForm(product) {
   selectedFiles = [];
 
   if ($("imageFiles")) {
-
     $("imageFiles").value = "";
   }
 
-  renderExistingImages(
-    product
-  );
+  renderExistingImages(product);
 
   window.scrollTo({
-
     top: 0,
-
     behavior: "smooth"
-
   });
 }
 
@@ -863,9 +760,7 @@ function fillForm(product) {
    EXISTING IMAGES
 ========================= */
 
-function renderExistingImages(
-  product
-) {
+function renderExistingImages(product) {
 
   const preview =
     $("imagePreview");
@@ -900,9 +795,7 @@ function renderExistingImages(
       .slice(0, 5);
 
   if (!images.length) {
-
     preview.innerHTML = "";
-
     return;
   }
 
@@ -933,7 +826,6 @@ function renderExistingImages(
       .join("");
 
   if ($("uploadStatus")) {
-
     $("uploadStatus").textContent =
       "Existing images shown. Select new images to replace them.";
   }
@@ -955,11 +847,9 @@ async function saveProduct(
     readForm();
 
   if (!data.name) {
-
     toast(
       "Enter a product name"
     );
-
     return;
   }
 
@@ -993,6 +883,7 @@ async function saveProduct(
 
       let images = [];
 
+
       if (
         Array.isArray(
           existingProduct?.images
@@ -1016,19 +907,15 @@ async function saveProduct(
       }
 
 
-      /*
-         If new images were selected,
-         use their GitHub paths.
-      */
-
       if (selectedFiles.length) {
-
         images =
           selectedImagePaths();
       }
 
+
       images =
         images.slice(0, 5);
+
 
       const updateData = {
 
@@ -1067,14 +954,17 @@ async function saveProduct(
           serverTimestamp()
       };
 
+
       await updateDoc(
         productRef,
         updateData
       );
 
+
       toast(
         "Product updated"
       );
+
     }
 
 
@@ -1088,6 +978,7 @@ async function saveProduct(
         selectedFiles.length
           ? selectedImagePaths()
           : [];
+
 
       await addDoc(
         collection(
@@ -1136,10 +1027,12 @@ async function saveProduct(
         }
       );
 
+
       toast(
         "Product added"
       );
     }
+
 
     clearForm();
 
@@ -1168,9 +1061,7 @@ async function saveProduct(
    DELETE PRODUCT
 ========================= */
 
-async function removeProduct(
-  id
-) {
+async function removeProduct(id) {
 
   const product =
     products.find(
@@ -1229,12 +1120,14 @@ document.addEventListener(
   "DOMContentLoaded",
   () => {
 
+
     /* LOGIN */
 
     $("loginBtn")?.addEventListener(
       "click",
       login
     );
+
 
     $("passwordInput")?.addEventListener(
       "keydown",
@@ -1324,6 +1217,7 @@ document.addEventListener(
             "[data-delete]"
           );
 
+
         if (editButton) {
 
           const product =
@@ -1341,6 +1235,7 @@ document.addEventListener(
             );
           }
         }
+
 
         if (deleteButton) {
 
@@ -1369,12 +1264,14 @@ document.addEventListener(
             : "Not logged in"
         );
 
+
         if (!user) {
 
           showLogin();
 
           return;
         }
+
 
         if (
           user.uid !==
@@ -1391,6 +1288,7 @@ document.addEventListener(
 
           return;
         }
+
 
         showAdmin();
 
