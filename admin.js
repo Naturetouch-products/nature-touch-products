@@ -715,9 +715,14 @@ async function selectedImagePaths() {
       body: formData
     });
 
-    if (!response.ok) {
-      throw new Error("Image upload failed");
-    }
+   if (!response.ok) {
+  const errorData = await response.json().catch(() => ({}));
+
+  throw new Error(
+    errorData?.error?.message ||
+    "Cloudinary upload failed"
+  );
+}
 
     const data = await response.json();
 
